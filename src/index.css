@@ -11,3 +11,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.custom-navbar {
+  background-color: #D9E1E6
+}
+
+#title {
+  font-family: Brush Script MT;
+  font-size: 40px;
+  color: #ffffff;
+}

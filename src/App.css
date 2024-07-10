@@ -36,3 +36,30 @@
     transform: rotate(360deg);
   }
 }
+
+.title{
+  font-family: Brush Script MT;
+  font-size:50px;
+  color: #8EAADB;
+  align-self: center;
+}
+.primaryBtn {
+padding: 10px;
+text-align: center;
+margin: 4px 2px;
+border-radius: 8px;
+color: #ffffff;
+background-color: #b4c7e7;
+border-color: #b4c7e7;
+
+}
+
+.description-box {
+  max-height: 300px; 
+  overflow-y: auto; 
+  word-wrap: break-word;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%;
+}
