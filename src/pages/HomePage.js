@@ -1,70 +1,38 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
-import AppBar from '../components/AppBar';
-import { getReviewsPaginated, getImage } from '../API/api';
+import { getReviewsPaginated } from '../API/api';
 import ReviewItem from '../components/ReviewItem';
 import ReviewDetails from '../components/ReviewDetails';
+import PaginationComponent from '../components/Pagination';
 
-function HomePage() {
+const HomePage = () => {
     const [reviews, setReviews] = useState([]);
-    const [selectedReview, setSelectedReview] = useState({});
+    const [selectedReviewId, setSelectedReviewId] = useState(-1);
     const [isOpen, setIsOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [nPages, setNPages] = useState(0);
+    
 
     const inic = async () => {
         try {
-            const r = await getReviewsPaginated(1);
+            const r = await getReviewsPaginated(currentPage, false);
+            console.log(r);
             const revs = r.reviews;
             setReviews(revs);
+            setNPages(r.totalPages);
 
             console.log(revs);
-            // await processReviewsWithImages(revs);
         } catch (error) {
             console.error('Erro ao obter reviews:', error);
         }
 
     }
 
-    // função para processar e atualizar as reviews com imagens
-    const processReviewsWithImages = async (reviews) => {
-        const updatedReviews = [];
-        try {
-
-            // for (const element of reviews) {
-            //     element.image = await fetchImage(element);
-            //     updatedReviews.push(element);
-            // }
-
-            // Promise.allSettled([await fetchImage(element), fetchImage(element), fetchImage(element)])
-
-            await Promise.allSettled(reviews.map(async element => {
-                element.image = await fetchImage(element);
-                updatedReviews.push(element);
-            }));
-
-            setReviews(updatedReviews); // Define as revisões atualizadas no estado
-
-        } catch (error) {
-            console.error('Erro ao processar reviews com imagens:', error);
-        }
-    };
-
-    const fetchImage = async (review) => {
-        var imageUrl = "";
-        try {
-            imageUrl = await getImage(review.image);
-            console.log("URL:", imageUrl);
-        } catch (error) {
-            console.error('Failed to fetch image', error);
-        }
-
-        return imageUrl;
-    };
-
     useEffect(() => {
+
         inic();
-        // processReviewsWithImages();
-    }, []);
+    }, [currentPage]);
 
     const rows = useMemo(() => {
         const rows = [];
@@ -76,15 +44,17 @@ function HomePage() {
 
     return (
         <>
-            <AppBar />
-
             <div>
                 {reviews.length > 0 ? (
                     <div className="container" style={{ marginTop: '50px' }}>
                         {rows.map((row, rowIndex) => (
                             <div className="row" key={rowIndex}>
                                 {row.map((review) => (
-                                    <ReviewItem key={review.reviewId} setIsOpen={setIsOpen} review={review} setSelectedReview={setSelectedReview} />
+                                    <ReviewItem key={review.reviewId} setIsOpen={setIsOpen} review={review} setSelectedReviewId={setSelectedReviewId} source="homePage"
+                                    //vindo daqui o setIsEditOpen e o setReviewToEdit não vai servir para nada
+                                        setIsEditOpen={setIsOpen}
+                                        setReviewToEdit={ setIsOpen}
+                                    />
 
                                 ))}
                             </div>
@@ -93,7 +63,10 @@ function HomePage() {
                 ) : (
                     <p>Nenhuma review disponível.</p>
                 )}
-                <ReviewDetails isOpen={isOpen} setIsOpen={setIsOpen} review={selectedReview}></ReviewDetails>
+                <ReviewDetails isOpen={isOpen} setIsOpen={setIsOpen} revId={selectedReviewId}></ReviewDetails>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px' }}>
+                    <PaginationComponent currentPage={currentPage} nPages={nPages} setCurrentPage={setCurrentPage}></PaginationComponent>
+                </div>
             </div>
 
         </>
