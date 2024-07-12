@@ -31,11 +31,11 @@ const LogInPage = () => {
                  setContext((prevState) => ({ ...prevState, isAuthenticated: true }))
                 navigate(ROUTES.HOME);
             } else {
-                setErrorMessage("Houve um problema e a conta não foi criada! Tente novamente...");
+                setErrorMessage("Os dados de acessos estão incorretos. Volte a tentar!");
             }
         } catch (error) {
-            console.error("Erro ao criar a conta", error);
-            setErrorMessage("Houve um erro ao criar a conta. Por favor, tente novamente mais tarde.");
+            console.error("Erro ao entrar na conta", error);
+            setErrorMessage("Houve um erro entar na conta. Por favor, tente novamente mais tarde.");
         }
     };
 

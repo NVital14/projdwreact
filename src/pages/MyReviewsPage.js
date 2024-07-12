@@ -7,12 +7,14 @@ import { ROUTES, AppContext } from '../App';
 import { useNavigate } from 'react-router-dom';
 import ReviewDetails from '../components/ReviewDetails';
 import PaginationComponent from '../components/Pagination';
+import DeleteReview from '../components/DeleteReview';
 
 const MyReviewsPage = () => {
     const navigate = useNavigate();
     const { context, setContext } = useContext(AppContext);
     const [isNewReviewOpen, setIsNewReviewOpen] = useState(false);
     const [isEditReviewOpen, setIsEditReviewOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [selectedReviewId, setSelectedReviewId] = useState({});
     const [reviewToEdit, setReviewToEdit] = useState({});
@@ -54,7 +56,7 @@ const MyReviewsPage = () => {
         else {
             navigate(ROUTES.HOME);
         }
-    }, [currentPage]);
+    }, [currentPage, reviewToEdit]);
 
     const rows = useMemo(() => {
         const rows = [];
@@ -81,7 +83,7 @@ const MyReviewsPage = () => {
                         {rows.map((row, rowIndex) => (
                             <div className="row" key={rowIndex}>
                                 {row.map((review) => (
-                                    <ReviewItem key={review.reviewId} setIsOpen={setIsDetailsOpen} review={review} setSelectedReviewId={setSelectedReviewId} source="myReviewsPage" setIsEditOpen={setIsEditReviewOpen} setReviewToEdit={setReviewToEdit} />
+                                    <ReviewItem key={review.reviewId} setIsOpen={setIsDetailsOpen} review={review} setSelectedReviewId={setSelectedReviewId} source="myReviewsPage" setIsEditOpen={setIsEditReviewOpen} setReviewToEdit={setReviewToEdit} setIsDeleteOpen={setIsDeleteOpen}/>
 
                                 ))}
                             </div>
@@ -89,8 +91,12 @@ const MyReviewsPage = () => {
                     </div>
                 ) : (
                     <p>Nenhuma review disponível.</p>)}
-                <CreateReview isOpen={isNewReviewOpen} setIsOpen={setIsNewReviewOpen} categories={categories} users={users} review={null} />
-                <CreateReview isOpen={isEditReviewOpen} setIsOpen={setIsEditReviewOpen} categories={categories} users={users} review={reviewToEdit} />
+                <CreateReview isOpen={isNewReviewOpen} setIsOpen={setIsNewReviewOpen} categories={categories} users={users}
+                    //estes dois parametros não vão ser usados no criar review, quando o objetivo é criar uma nova review
+                    review={null} setReview={setReviewToEdit} />
+                <CreateReview isOpen={isEditReviewOpen} setIsOpen={setIsEditReviewOpen} categories={categories} users={users} review={reviewToEdit} setReview={setReviewToEdit} />
+                
+                <DeleteReview isOpen={isDeleteOpen} setIsOpen={setIsDeleteOpen} review={reviewToEdit} setReview={ setReviewToEdit}> </DeleteReview>
 
                 <ReviewDetails isOpen={isDetailsOpen} setIsOpen={setIsDetailsOpen} revId={selectedReviewId}></ReviewDetails>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px' }}>

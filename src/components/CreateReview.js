@@ -7,7 +7,7 @@ import { ROUTES, AppContext } from '../App';
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
 import { saveReview, editReview } from '../API/api';
 
-const CreateReview = ({ isOpen, setIsOpen, categories, users, review }) => {
+const CreateReview = ({ isOpen, setIsOpen, categories, users, review, setReview }) => {
 
     const { context, setContext } = useContext(AppContext);
     const [rating, setRating] = useState(0);
@@ -30,8 +30,13 @@ const CreateReview = ({ isOpen, setIsOpen, categories, users, review }) => {
     };
 
     const handleSelectChange = (selectedOptions) => {
-        const userIdsList = selectedOptions.map(option => option.value);
-        setFormData({ ...formData, userIdsList });
+        console.log(selectedOptions);
+        setFormData({
+            ...formData,
+            userIdsList: selectedOptions ? selectedOptions.map(option => option.value) : []
+        });
+        // const userIdsList = selectedOptions.map(option => option.value);
+        // setFormData({ ...formData, userIdsList });
     };
 
     const handleSubmitSave = async (event) => {
@@ -58,6 +63,15 @@ const CreateReview = ({ isOpen, setIsOpen, categories, users, review }) => {
         try {
             const r = await saveReview(formDataToSend);
             console.log(r);
+            //tenho que mudar o estado da review, para a página das reviews voltar a ir buscá-las
+            setReview({
+                title: formData.title,
+                image: formData.image,
+                rating: formData.rating,
+                category: formData.category,
+                description: formData.description,
+                isShared: formData.isShared,
+            });
             setErrorMessage('');
             setFormData({
                 title: '',
@@ -99,12 +113,24 @@ const CreateReview = ({ isOpen, setIsOpen, categories, users, review }) => {
         if (formData.image != review.image) {
             formDataToSend.append('imageReview', formData.image);
         }
-        console.log(formDataToSend);
+        // console.log(formDataToSend);
 
         try {
+            console.log("dentro do try");
             const r = await editReview(review.reviewId, formDataToSend);
+            console.log("já editei");
             console.log(r);
-            setErrorMessage('');
+
+            setIsOpen(false);
+            //tenho que mudar o estado da review, para a página das reviews voltar a ir buscá-las
+            setReview({
+                title: formData.title,
+                image: formData.image,
+                rating: formData.rating,
+                category: formData.category,
+                description: formData.description,
+                isShared: formData.isShared,
+            });
             setFormData({
                 title: '',
                 image: null,
@@ -114,7 +140,7 @@ const CreateReview = ({ isOpen, setIsOpen, categories, users, review }) => {
                 isShared: false,
                 userIdsList: []
             });
-            setIsOpen(false);
+            setErrorMessage('');
             setPreviewImage(null);
             setRating(0);
             return;
@@ -132,7 +158,7 @@ const CreateReview = ({ isOpen, setIsOpen, categories, users, review }) => {
             if (review.users && Array.isArray(review.users)) {
                 review.users.forEach(el => {
                     if (context.user.id != el.id) {
-                        
+
                         idsList.push(el.id);
                     }
                 });
@@ -153,19 +179,8 @@ const CreateReview = ({ isOpen, setIsOpen, categories, users, review }) => {
             if (review.imageUrl) {
                 setPreviewImage(review.imageUrl);
             }
-        } else {
-            setFormData({
-                title: '',
-                image: null,
-                rating: 0,
-                category: -1,
-                description: '',
-                isShared: false,
-                userIdsList: []
-            });
-            setRating(0);
-            setPreviewImage(null);
         }
+        
     }, [isOpen]);
 
     return (
@@ -238,10 +253,22 @@ const CreateReview = ({ isOpen, setIsOpen, categories, users, review }) => {
                                 onChange={handleSelectChange}
                                 placeholder="Selecione os utilizadores..."
                                 noOptionsMessage={() => "Nenhum utilizador encontrado"}
+                                value={users.filter(user => formData.userIdsList.includes(user.id))
+                                    .map(user => ({ value: user.id, label: user.userName }))}
+                            />
+                            {/* <Select
+                                isMulti
+                                name="userIdsList"
+                                options={users.map(user => ({ value: user.id, label: user.userName }))}
+                                className="basic-multi-select"
+                                classNamePrefix="select"
+                                onChange={handleSelectChange}
+                                placeholder="Selecione os utilizadores..."
+                                noOptionsMessage={() => "Nenhum utilizador encontrado"}
                                 value={review && review.users ? review.users
                                     .filter(user => formData.userIdsList.includes(user.id))
                                     .map(user => ({ value: user.id, label: user.userName })) : []}
-                            />
+                            /> */}
                             {/* <Form.Control as="select" name="userIdsList" multiple>
                                 {users.map((user) => (
                                     <option key={user.id} value={user.id}>{user.userName}</option>
@@ -252,8 +279,21 @@ const CreateReview = ({ isOpen, setIsOpen, categories, users, review }) => {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    {review ? <Button className='primaryBtn' onClick={handleSubmitEdit}>Guardar alterações</Button> : <Button className='primaryBtn' onClick={handleSubmitSave}>Guardar</Button>} 
-                    <Button variant="secondary" onClick={() => setIsOpen(false)}>Voltar à lista</Button>
+                    {review ? <Button className='primaryBtn' onClick={handleSubmitEdit}>Guardar alterações</Button> : <Button className='primaryBtn' onClick={handleSubmitSave}>Guardar</Button>}
+                    <Button variant="secondary" onClick={() => {
+                        setIsOpen(false); setFormData({
+                            title: '',
+                            image: null,
+                            rating: 0,
+                            category: -1,
+                            description: '',
+                            isShared: false,
+                            userIdsList: []
+                        });
+                        setErrorMessage('');
+                        setRating(0);
+                        setPreviewImage(null);
+                    }}>Voltar à lista</Button>
                 </Modal.Footer>
             </Modal>
 

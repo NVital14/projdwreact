@@ -167,6 +167,28 @@ export async function getCategories() {
 }
 
 
+//verifica buscar os favoritos
+export async function getFavorites() {
+    try {
+        const response = await fetch("https://localhost:7218/api/Favorites/get-favorite", {
+
+            method: 'GET',
+            credentials: 'include', // Para enviar cookies
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok' + response.statusText);
+        }
+        const data = await response.json();
+        return data;
+
+    }
+    catch (e) {
+        console.log("ERRO", e);
+    }
+}
 //POST
 //cria um comentário
 export function saveComment(revId, comment) {
@@ -267,7 +289,24 @@ export async function editReview(id,body) {
             body: body
         });
 
-        return response.json(); // retorna a resposta 
+        return response.ok; // retorna a resposta 
+    } catch (error) {
+        console.error("Erro ao editar a review", error);
+        throw error; // lança o erro para ser tratado pelo código que chamou a função
+    }
+}
+
+
+//DELETE
+//elimina uma review
+export async function deleteReview(id) {
+    try {
+        const response = await fetch("https://localhost:7218/api/Reviews/delete-review/" + id, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        return response.ok; // retorna a resposta 
     } catch (error) {
         console.error("Erro ao editar a review", error);
         throw error; // lança o erro para ser tratado pelo código que chamou a função

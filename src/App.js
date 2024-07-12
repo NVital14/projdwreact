@@ -16,7 +16,7 @@ export const ROUTES = {
 }
 
 var contextInterface = {
-  context: { isAuthenticated: false, user: {}, isAdmin: false },
+  context: { isAuthenticated: false, user: {}},
   setContext: () => { }
 }
 
@@ -46,18 +46,10 @@ function App() {
         } catch (error) {
           console.error('Erro ao obter o utilizador:', error);
         }
-        //se o utilizador estiver autenticado, verifica se é admin
-        try {
-          const admin = await isAdmin();
-          setCtx((prevState) => ({ ...prevState, isAdmin: admin }));
-          console.log(admin);
-        } catch (error) {
-          console.error('Erro ao obter o utilizador:', error);
-        }
+
       }
       else {
         setCtx((prevState) => ({ ...prevState, user: {} }));
-        setCtx((prevState) => ({ ...prevState, isAdmin: false }));
       }
     } catch (error) {
       console.error('Erro ao saber se o utlizador está autenticado:', error);

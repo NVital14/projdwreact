@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useContext, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
-import { getReviewsPaginated } from '../API/api';
+import { getFavorites, getReviewsPaginated } from '../API/api';
+import {AppContext } from '../App';
 import ReviewItem from '../components/ReviewItem';
 import ReviewDetails from '../components/ReviewDetails';
 import PaginationComponent from '../components/Pagination';
@@ -12,15 +13,17 @@ const HomePage = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [nPages, setNPages] = useState(0);
+    const { context, setContext } = useContext(AppContext);
     
 
     const inic = async () => {
         try {
             const r = await getReviewsPaginated(currentPage, false);
-            console.log(r);
             const revs = r.reviews;
             setReviews(revs);
             setNPages(r.totalPages);
+
+
 
             console.log(revs);
         } catch (error) {

@@ -5,7 +5,7 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import '../App.css';
 import { getImage } from '../API/api';
 
-const ReviewItem = ({ setIsOpen, review, setSelectedReviewId, source, setIsEditOpen, setReviewToEdit }) => {
+const ReviewItem = ({ setIsOpen, review, setSelectedReviewId, source, setIsEditOpen, setReviewToEdit, setIsDeleteOpen }) => {
     //função para dar render das estrelas da review
     const renderStars = (rating) => {
         const stars = [];
@@ -44,7 +44,7 @@ const ReviewItem = ({ setIsOpen, review, setSelectedReviewId, source, setIsEditO
                                     <button onClick={() => { setIsEditOpen(true); setReviewToEdit(review); setIsOpen(false); }} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
                                         <FontAwesomeIcon icon={faEdit} style={{ color: 'steelblue', marginTop: '1px', marginRight: '10px' }} />
                                     </button>
-                                    <button style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+                                    <button onClick={() => { setIsDeleteOpen(true); setReviewToEdit(review); setIsOpen(false); }} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
                                         <FontAwesomeIcon icon={faTrash} style={{ color: 'red', marginTop: '1px', marginLeft: '10px' }} />
                                     </button></>
                                 : <h6></h6>}
