@@ -26,6 +26,12 @@ const AppBar = () => {
                                 {/* <a className="nav-link text-light"> <strong>As Minhas Reviews</strong></a> */}
 
                             </li> : ""}
+                            {context.isAuthenticated ?
+                            <li className="nav-item">
+                                <button className="nav-link btn btn-link text-light" onClick={() => navigate(ROUTES.FAVORITES)}><strong>Favoritos</strong></button>
+                                {/* <a className="nav-link text-light"> <strong>As Minhas Reviews</strong></a> */}
+
+                            </li> : ""}
 
                     </ul>
 

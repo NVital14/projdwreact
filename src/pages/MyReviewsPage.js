@@ -83,7 +83,7 @@ const MyReviewsPage = () => {
                         {rows.map((row, rowIndex) => (
                             <div className="row" key={rowIndex}>
                                 {row.map((review) => (
-                                    <ReviewItem key={review.reviewId} setIsOpen={setIsDetailsOpen} review={review} setSelectedReviewId={setSelectedReviewId} source="myReviewsPage" setIsEditOpen={setIsEditReviewOpen} setReviewToEdit={setReviewToEdit} setIsDeleteOpen={setIsDeleteOpen}/>
+                                    <ReviewItem key={review.reviewId} setIsOpen={setIsDetailsOpen} review={review} updateReviews={setSelectedReviewId} setSelectedReviewId={setSelectedReviewId} source="myReviewsPage" setIsEditOpen={setIsEditReviewOpen} setReviewToEdit={setReviewToEdit} setIsDeleteOpen={setIsDeleteOpen}/>
 
                                 ))}
                             </div>

@@ -2,19 +2,19 @@ import React, { useEffect, useMemo, useContext, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 import { getFavorites, getReviewsPaginated } from '../API/api';
-import {AppContext } from '../App';
+import { AppContext } from '../App';
 import ReviewItem from '../components/ReviewItem';
 import ReviewDetails from '../components/ReviewDetails';
 import PaginationComponent from '../components/Pagination';
 
 const HomePage = () => {
     const [reviews, setReviews] = useState([]);
+    const [r, setR] = useState([]);
     const [selectedReviewId, setSelectedReviewId] = useState(-1);
     const [isOpen, setIsOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [nPages, setNPages] = useState(0);
     const { context, setContext } = useContext(AppContext);
-    
 
     const inic = async () => {
         try {
@@ -22,6 +22,32 @@ const HomePage = () => {
             const revs = r.reviews;
             setReviews(revs);
             setNPages(r.totalPages);
+
+            if (context.isAuthenticated) {
+                const f = await getFavorites();
+                if (f != null) {
+                    console.log("favorites", f);
+                    const favoriteIds = new Set(f.map(f => f.reviewFK));
+
+                    //adicionar um novo campo às reviews, se é favorito ou não
+                    let newReviews = [];
+                    revs.map((r) => {
+                        newReviews.push({
+                            reviewId: r.reviewId,
+                            title: r.title,
+                            image: r.image,
+                            category: r.category,
+                            description: r.description,
+                            rating: r.rating,
+                            isFavorite: favoriteIds.has(r.reviewId) ? true : false
+                        })
+
+                    })
+                    setReviews(newReviews);
+                }
+            } else {
+                
+            }
 
 
 
@@ -35,7 +61,7 @@ const HomePage = () => {
     useEffect(() => {
 
         inic();
-    }, [currentPage]);
+    }, [currentPage, r]);
 
     const rows = useMemo(() => {
         const rows = [];
@@ -53,10 +79,14 @@ const HomePage = () => {
                         {rows.map((row, rowIndex) => (
                             <div className="row" key={rowIndex}>
                                 {row.map((review) => (
-                                    <ReviewItem key={review.reviewId} setIsOpen={setIsOpen} review={review} setSelectedReviewId={setSelectedReviewId} source="homePage"
-                                    //vindo daqui o setIsEditOpen e o setReviewToEdit não vai servir para nada
+
+                                    < ReviewItem key={review.reviewId} setIsOpen={setIsOpen} review={review}
+                                        // este parametro serve para no review item, mudar o estado, para que ele volte a fazer o useEffect
+                                        updateReviews={setR}
+                                        setSelectedReviewId={setSelectedReviewId} source="homePage"
+                                        //vindo daqui o setIsEditOpen e o setReviewToEdit não vai servir para nada
                                         setIsEditOpen={setIsOpen}
-                                        setReviewToEdit={ setIsOpen}
+                                        setReviewToEdit={setIsOpen}
                                     />
 
                                 ))}

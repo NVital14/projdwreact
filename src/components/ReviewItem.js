@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar as farStar } from '@fortawesome/free-regular-svg-icons';
 import '../App.css';
-import { getImage } from '../API/api';
+import { AppContext } from '../App';
+import { addFavorite, deleteFavorite } from '../API/api';
 
-const ReviewItem = ({ setIsOpen, review, setSelectedReviewId, source, setIsEditOpen, setReviewToEdit, setIsDeleteOpen }) => {
+const ReviewItem = ({ setIsOpen, review, updateReviews, setSelectedReviewId, source, setIsEditOpen, setReviewToEdit, setIsDeleteOpen }) => {
+    const { context, setContext } = useContext(AppContext);
     //função para dar render das estrelas da review
     const renderStars = (rating) => {
         const stars = [];
@@ -18,11 +21,46 @@ const ReviewItem = ({ setIsOpen, review, setSelectedReviewId, source, setIsEditO
         return stars;
     };
 
+    
+    //SE A ESTRELA SÓ COM BORDA FOR PRESSIONADA, VAI ADICIONAR UM FAVORITO FAVORITO
+
+     const handleNewFavorite = async() => {
+        try {
+            const r = await addFavorite(review.reviewId);
+            if (r.ok) {
+                console.log("novo fav!");
+                updateReviews([1, 2]);
+            }
+            else {
+                console.log("não temos novo fav!");
+            }
+        } catch (error) {
+            console.error('Erro ao obter guardar o comentário:', error);
+        }
+    }
+
+    //SE A ESTRELA PREENCHIDA FOR PRESSIONADA, VAI ELIMINAR O FAVORITO
+    const handleDeleteFavorite = async() => {
+        try {
+            console.log("entrei no delete");
+            const r = await deleteFavorite(review.reviewId);
+            if (r.ok) {
+                console.log("delete fav!");
+                updateReviews([1, 2]);
+            }
+            else {
+                console.log("não temos delete fav!");
+            }
+        } catch (error) {
+            console.error('Erro ao obter guardar o comentário:', error);
+        }
+    }
+
     return (
 
         <div className="col" style={{ marginTop: '20px' }}>
             <div className="col-sm">
-                <div className="card border-light mb-3" style={{ maxWidth: '18rem', height: '420px' }} >
+                <div className="card border-light mb-3" style={{ maxWidth: '18rem', height: '440px' }} >
                     <div className="card-header"><b><center>{review.title}</center></b></div>
                     <div className="card-body" onClick={() => {
                         setIsOpen(true);
@@ -48,6 +86,16 @@ const ReviewItem = ({ setIsOpen, review, setSelectedReviewId, source, setIsEditO
                                         <FontAwesomeIcon icon={faTrash} style={{ color: 'red', marginTop: '1px', marginLeft: '10px' }} />
                                     </button></>
                                 : <h6></h6>}
+                            {/* se a source for home, se o utilizador estiver autenticado e a review for favorita, coloca uma estrela preenchida, senão não mete nada */}
+                            {source == "homePage" && context.isAuthenticated && review?.isFavorite ?
+                                <button onClick={() => handleDeleteFavorite()}
+                                    style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+                                    <FontAwesomeIcon icon={faStar} style={{ color: 'gold' }} /> </button> : <h6></h6>}
+                            {/* se a source for home, se o utilizador estiver autenticado e a review não for favorita, coloca uma estrela só com bordas, senão não mete nada */}
+                            {source == "homePage" && context.isAuthenticated && review?.isFavorite == false ?
+                                <button onClick={() => handleNewFavorite()} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+                                    <FontAwesomeIcon icon={farStar} style={{ color: 'gold' }} />
+                                </button> : <h6></h6>}
                         </center>
                     </div>
                 </div>

@@ -170,13 +170,10 @@ export async function getCategories() {
 //verifica buscar os favoritos
 export async function getFavorites() {
     try {
-        const response = await fetch("https://localhost:7218/api/Favorites/get-favorite", {
+        const response = await fetch("https://localhost:7218/api/Favorites/get-favorites", {
 
             method: 'GET',
             credentials: 'include', // Para enviar cookies
-            headers: {
-                'Content-Type': 'application/json',
-            }
         });
         if (!response.ok) {
             throw new Error('Network response was not ok' + response.statusText);
@@ -296,6 +293,20 @@ export async function editReview(id,body) {
     }
 }
 
+//adicionar novo favorito
+export function addFavorite(revId) {
+    try {
+
+        return fetch("https://localhost:7218/api/Favorites/add-favorite/" + revId, {
+            method: "POST",
+            credentials: 'include',
+        });
+
+    }
+    catch (e) {
+        console.log("ERRO", e);
+    }
+}
 
 //DELETE
 //elimina uma review
@@ -312,3 +323,19 @@ export async function deleteReview(id) {
         throw error; // lança o erro para ser tratado pelo código que chamou a função
     }
 }
+
+//eliminar favorito
+export function deleteFavorite(revId) {
+    try {
+
+        return fetch("https://localhost:7218/api/Favorites/delete-favorite/" + revId, {
+            method: "DELETE",
+            credentials: 'include',
+        });
+
+    }
+    catch (e) {
+        console.log("ERRO", e);
+    }
+}
+

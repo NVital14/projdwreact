@@ -106,6 +106,7 @@ const ReviewDetails = ({ isOpen, setIsOpen, revId }) => {
 
     //em vez de mandar a review da HomePage, vou buscá-la aqui, para os comentários estarem sempre atualizados
     const inic = async (revId) => {
+        console.log("entrei no inic do details, revId:", revId);
         try {
             const r = await getReview(revId);
             console.log(r);

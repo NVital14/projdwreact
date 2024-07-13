@@ -7,12 +7,14 @@ import LogInPage from "./pages/LogInPage";
 import RegisterPage from "./pages/RegisterPage";
 import { getCurrentUser, isAuthenticated, isAdmin } from "./API/api";
 import MyReviewsPage from "./pages/MyReviewsPage";
+import FavoritesPage from "./pages/FavoritesPage";
 
 export const ROUTES = {
   LOG_IN: '/log-in',
   REGISTER: '/register',
   HOME: '/home',
-  MYREVIEWS: '/myreviews'
+  MYREVIEWS: '/myreviews',
+  FAVORITES: '/favorites'
 }
 
 var contextInterface = {
@@ -81,6 +83,7 @@ function App() {
             <Route key={ROUTES.LOG_IN} path={ROUTES.LOG_IN} element={<LogInPage />} />
             <Route key={ROUTES.REGISTER} path={ROUTES.REGISTER} element={<RegisterPage />} />
             <Route key={ROUTES.MYREVIEWS} path={ROUTES.MYREVIEWS} element={<MyReviewsPage />} />
+            <Route key={ROUTES.FAVORITES} path={ROUTES.FAVORITES} element={<FavoritesPage />} />
             {/* <Route key={ROUTES.FAVORITES} path={ROUTES.FAVORITES} element={<FavoritesScreen />} />
         <Route key={ROUTES.CRUD} path={ROUTES.CRUD} element={<CRUDScreen />} /> */}
 
