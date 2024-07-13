@@ -26,7 +26,6 @@ const HomePage = () => {
             if (context.isAuthenticated) {
                 const f = await getFavorites();
                 if (f != null) {
-                    console.log("favorites", f);
                     const favoriteIds = new Set(f.map(f => f.reviewFK));
 
                     //adicionar um novo campo às reviews, se é favorito ou não
@@ -51,7 +50,6 @@ const HomePage = () => {
 
 
 
-            console.log(revs);
         } catch (error) {
             console.error('Erro ao obter reviews:', error);
         }
@@ -94,7 +92,9 @@ const HomePage = () => {
                         ))}
                     </div>
                 ) : (
-                    <p>Nenhuma review disponível.</p>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                    <p style={{ fontSize: '20px' }}>Nenhuma review disponível!</p>
+                </div>
                 )}
                 <ReviewDetails isOpen={isOpen} setIsOpen={setIsOpen} revId={selectedReviewId}></ReviewDetails>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px' }}>

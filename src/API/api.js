@@ -54,7 +54,14 @@ export async function getReview(id) {
 //verifica se o utilizador está autenticado
 export async function isAuthenticated() {
     try {
-        const response = await fetch("https://localhost:7218/api/Utilizadores/is-authenticaded");
+        const response = await fetch("https://localhost:7218/api/Utilizadores/is-authenticaded", {
+
+            method: 'GET',
+            credentials: 'include', // Para enviar cookies
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
         if (!response.ok) {
             throw new Error('Network response was not ok' + response.statusText);
         }
@@ -204,6 +211,23 @@ export function saveComment(revId, comment) {
     }
 }
 
+//cria uma categoria
+export function saveCategory(categoryName) {
+    try {
+
+        return fetch("https://localhost:7218/api/Categories/create-category", {
+            method: "POST",
+            credentials: 'include',
+            body: JSON.stringify({
+                name: categoryName,
+            })
+        });
+    }
+    catch (e) {
+        console.log("ERRO", e);
+    }
+}
+
 //cria uma conta nova
 export async function createAccount(email, userName, pass) {
     try {
@@ -276,6 +300,20 @@ export async function saveReview(body) {
     }
 }
 
+//adicionar novo favorito
+export function addFavorite(revId) {
+    try {
+
+        return fetch("https://localhost:7218/api/Favorites/add-favorite/" + revId, {
+            method: "POST",
+            credentials: 'include',
+        });
+
+    }
+    catch (e) {
+        console.log("ERRO", e);
+    }
+}
 //PUT
 //edita uma review
 export async function editReview(id,body) {
@@ -293,15 +331,18 @@ export async function editReview(id,body) {
     }
 }
 
-//adicionar novo favorito
-export function addFavorite(revId) {
+//edita uma categoria
+export function editCategory(id, categoryName) {
     try {
 
-        return fetch("https://localhost:7218/api/Favorites/add-favorite/" + revId, {
-            method: "POST",
+        return fetch("https://localhost:7218/api/Categories/edit-category/" + id, {
+            method: "PUT",
             credentials: 'include',
+            body: JSON.stringify({
+                name: categoryName,
+                categoryId:id
+            })
         });
-
     }
     catch (e) {
         console.log("ERRO", e);
@@ -338,4 +379,20 @@ export function deleteFavorite(revId) {
         console.log("ERRO", e);
     }
 }
+
+//eliminar categoria
+export function deleteCategory(id) {
+    try {
+
+        return fetch("https://localhost:7218/api/Categories/delete-category/" + id, {
+            method: "DELETE",
+            credentials: 'include',
+        });
+
+    }
+    catch (e) {
+        console.log("ERRO", e);
+    }
+}
+
 

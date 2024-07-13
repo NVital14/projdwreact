@@ -29,7 +29,6 @@ const MyReviewsPage = () => {
         try {
             //vai buscar as reviews do utilizador paginadas
             const r = await getReviewsPaginated(currentPage, true);
-            console.log(r);
             setMyReviews(r.reviews);
             setNPages(r.totalPages);
 
@@ -40,8 +39,7 @@ const MyReviewsPage = () => {
             //vai buscar as categorias
             const c = await getCategories();
             setCategories(c);
-            console.log(u);
-            console.log(c);
+
         } catch (error) {
             console.error('Erro ao obter reviews:', error);
         }
@@ -49,13 +47,8 @@ const MyReviewsPage = () => {
     }
 
     useEffect(() => {
-        if (context.isAuthenticated) {
-
             inic();
-        }
-        else {
-            navigate(ROUTES.HOME);
-        }
+
     }, [currentPage, reviewToEdit]);
 
     const rows = useMemo(() => {
@@ -90,7 +83,9 @@ const MyReviewsPage = () => {
                         ))}
                     </div>
                 ) : (
-                    <p>Nenhuma review disponível.</p>)}
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                    <p style={{ fontSize: '20px' }}>Ainda não criou nenhuma review. Comece a criar!</p>
+                </div>)}
                 <CreateReview isOpen={isNewReviewOpen} setIsOpen={setIsNewReviewOpen} categories={categories} users={users}
                     //estes dois parametros não vão ser usados no criar review, quando o objetivo é criar uma nova review
                     review={null} setReview={setReviewToEdit} />

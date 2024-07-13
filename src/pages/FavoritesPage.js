@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useContext } from 'react';
-import { getFavorites,  getReviewsPaginated } from '../API/api';
+import { getFavorites, getReviewsPaginated } from '../API/api';
 import ReviewItem from '../components/ReviewItem';
 import { ROUTES, AppContext } from '../App';
 import { useNavigate } from 'react-router-dom';
@@ -22,33 +22,32 @@ const FavoritesPage = () => {
         try {
             const r = await getReviewsPaginated(currentPage, false);
             const revs = r.reviews;
+            
+
+            const f = await getFavorites();
+            if (f != null) {
+                const favoriteIds = new Set(f.map(f => f.reviewFK));
+                //só reviews favoritas
+                let newReviews = [];
+                revs.map((r) => {
+                    if (favoriteIds.has(r.reviewId)) {
+                        newReviews.push({
+                            reviewId: r.reviewId,
+                            title: r.title,
+                            image: r.image,
+                            category: r.category,
+                            description: r.description,
+                            rating: r.rating,
+                            isFavorite: true
+                        })
+                    }
+                })
+                setReviews(newReviews);
+                setNPages(r.totalPages);
+                return;
+            }
             setReviews(revs);
             setNPages(r.totalPages);
-
-            if (context.isAuthenticated) {
-                const f = await getFavorites();
-                if (f != null) {
-                    console.log("favorites", f);
-                    const favoriteIds = new Set(f.map(f => f.reviewFK)); 
-                    //só reviews favoritas
-                    let newReviews = [];
-                    revs.map((r) => {
-                        if (favoriteIds.has(r.reviewId)) {
-                            newReviews.push({
-                                reviewId: r.reviewId,
-                                title: r.title,
-                                image: r.image,
-                                category: r.category,
-                                description: r.description,
-                                rating: r.rating,
-                                isFavorite: true
-                            })
-                        }
-                    })
-                    setReviews(newReviews);
-                }
-            }
-            console.log(revs);
         } catch (error) {
             console.error('Erro ao obter reviews:', error);
         }
@@ -82,26 +81,28 @@ const FavoritesPage = () => {
                         {rows.map((row, rowIndex) => (
                             <div className="row" key={rowIndex}>
                                 {row.map((review) => (
-                                   < ReviewItem key={review.reviewId} setIsOpen={setIsOpen} review={review}
-                                   // este parametro serve para no review item, mudar o estado, para que ele volte a fazer o useEffect
-                                   updateReviews={setR}
-                                   setSelectedReviewId={setSelectedReviewId} source="homePage"
-                                   //vindo daqui o setIsEditOpen e o setReviewToEdit não vai servir para nada
-                                   setIsEditOpen={setIsOpen}
-                                   setReviewToEdit={setIsOpen}
-                               />
+                                    < ReviewItem key={review.reviewId} setIsOpen={setIsOpen} review={review}
+                                        // este parametro serve para no review item, mudar o estado, para que ele volte a fazer o useEffect
+                                        updateReviews={setR}
+                                        setSelectedReviewId={setSelectedReviewId} source="homePage"
+                                        //vindo daqui o setIsEditOpen e o setReviewToEdit não vai servir para nada
+                                        setIsEditOpen={setIsOpen}
+                                        setReviewToEdit={setIsOpen}
+                                    />
 
                                 ))}
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <p>Nenhuma review disponível.</p>)}
-  
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                        <p style={{ fontSize: '20px' }}>Ainda não adiconou favoritos. Comece a adicionar!</p>
+                    </div>)}
+
 
                 <ReviewDetails isOpen={isOpen} setIsOpen={setIsOpen} revId={selectedReviewId}></ReviewDetails>
 
-                
+
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px' }}>
                     <PaginationComponent currentPage={currentPage} nPages={nPages} setCurrentPage={setCurrentPage}></PaginationComponent>
                 </div>

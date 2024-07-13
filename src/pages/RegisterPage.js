@@ -35,7 +35,6 @@ const RegisterPage = () => {
             const response = await createAccount(formData.email, formData.userName, formData.password);
     
             if (response.ok) {
-                console.log("dentro do OKKKKK");
                 setOkMessage("A conta foi criada com sucesso!");
                 setFormData({
                     email: '',

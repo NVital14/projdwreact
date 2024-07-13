@@ -28,11 +28,9 @@ const ReviewItem = ({ setIsOpen, review, updateReviews, setSelectedReviewId, sou
         try {
             const r = await addFavorite(review.reviewId);
             if (r.ok) {
-                console.log("novo fav!");
                 updateReviews([1, 2]);
             }
             else {
-                console.log("não temos novo fav!");
             }
         } catch (error) {
             console.error('Erro ao obter guardar o comentário:', error);
@@ -42,14 +40,11 @@ const ReviewItem = ({ setIsOpen, review, updateReviews, setSelectedReviewId, sou
     //SE A ESTRELA PREENCHIDA FOR PRESSIONADA, VAI ELIMINAR O FAVORITO
     const handleDeleteFavorite = async() => {
         try {
-            console.log("entrei no delete");
             const r = await deleteFavorite(review.reviewId);
             if (r.ok) {
-                console.log("delete fav!");
                 updateReviews([1, 2]);
             }
             else {
-                console.log("não temos delete fav!");
             }
         } catch (error) {
             console.error('Erro ao obter guardar o comentário:', error);

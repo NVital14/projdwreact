@@ -20,6 +20,12 @@ const AppBar = () => {
                 <div className="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul className="navbar-nav flex-grow-1">
 
+                    {context.isAdmin ?
+                            <li className="nav-item">
+                                <button className="nav-link btn btn-link text-light" onClick={() => navigate(ROUTES.CATEGORIES)}><strong>Categorias</strong></button>
+                                {/* <a className="nav-link text-light"> <strong>As Minhas Reviews</strong></a> */}
+
+                            </li> : ""}
                         {context.isAuthenticated ?
                             <li className="nav-item">
                                 <button className="nav-link btn btn-link text-light" onClick={() => navigate(ROUTES.MYREVIEWS)}><strong>As Minhas Reviews</strong></button>

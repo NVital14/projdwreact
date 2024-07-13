@@ -96,7 +96,6 @@ const ReviewDetails = ({ isOpen, setIsOpen, revId }) => {
     const handleSubmitComment = async () => {
         try {
             const r = await saveComment(review.reviewId, comment);
-            console.log(r);
             setComment('');
             newComment ? setNewComment(false) : setNewComment(true);
         } catch (error) {
@@ -106,10 +105,8 @@ const ReviewDetails = ({ isOpen, setIsOpen, revId }) => {
 
     //em vez de mandar a review da HomePage, vou buscá-la aqui, para os comentários estarem sempre atualizados
     const inic = async (revId) => {
-        console.log("entrei no inic do details, revId:", revId);
         try {
             const r = await getReview(revId);
-            console.log(r);
             setReview(r);
         } catch (error) {
             console.error('Erro ao obter reviews:', error);
@@ -122,7 +119,6 @@ const ReviewDetails = ({ isOpen, setIsOpen, revId }) => {
         }
     }, [newComment, revId]);
 
-    console.log(review);
 
     return (
         <Modal show={isOpen} onHide={() => { setIsOpen(false); setComment(''); }} className="custom-modal">

@@ -8,17 +8,19 @@ import RegisterPage from "./pages/RegisterPage";
 import { getCurrentUser, isAuthenticated, isAdmin } from "./API/api";
 import MyReviewsPage from "./pages/MyReviewsPage";
 import FavoritesPage from "./pages/FavoritesPage";
+import CategoriesPage from "./pages/CategoriesPage";
 
 export const ROUTES = {
   LOG_IN: '/log-in',
   REGISTER: '/register',
   HOME: '/home',
   MYREVIEWS: '/myreviews',
-  FAVORITES: '/favorites'
+  FAVORITES: '/favorites',
+  CATEGORIES: '/categories'
 }
 
 var contextInterface = {
-  context: { isAuthenticated: false, user: {}},
+  context: { isAuthenticated: false, user: {}, isAdmin: false },
   setContext: () => { }
 }
 
@@ -35,23 +37,30 @@ function App() {
 
         auth = await isAuthenticated();
         setCtx((prevState) => ({ ...prevState, isAuthenticated: auth }));
-        console.log(auth);
       }
       if (auth == true || ctx.isAuthenticated == true) {
         //se o utilizador estiver autenticado, vai buscar os seus dados
         try {
           const user = await getCurrentUser();
           setCtx((prevState) => ({ ...prevState, user: user }));
-          console.log(auth);
-          console.log(user);
+   
 
+        } catch (error) {
+          console.error('Erro ao obter o utilizador:', error);
+        }
+         //se o utilizador estiver autenticado, verifica se é admin
+         try {
+          const admin = await isAdmin();
+          setCtx((prevState) => ({ ...prevState, isAdmin: admin }));
         } catch (error) {
           console.error('Erro ao obter o utilizador:', error);
         }
 
       }
+      //se o utilizador não tiver autenticado...
       else {
         setCtx((prevState) => ({ ...prevState, user: {} }));
+        setCtx((prevState) => ({ ...prevState, isAdmin: false }));
       }
     } catch (error) {
       console.error('Erro ao saber se o utlizador está autenticado:', error);
@@ -77,13 +86,13 @@ function App() {
         <AppContext.Provider value={{ context: ctx, setContext: setCtx }} >
           <AppBar />
           <Routes>
-            {console.log('O contexto foi atualizado', ctx)}
             <Route path='/' element={<HomePage />} />
             <Route key={ROUTES.HOME} path={ROUTES.HOME} element={<HomePage />} />
             <Route key={ROUTES.LOG_IN} path={ROUTES.LOG_IN} element={<LogInPage />} />
             <Route key={ROUTES.REGISTER} path={ROUTES.REGISTER} element={<RegisterPage />} />
             <Route key={ROUTES.MYREVIEWS} path={ROUTES.MYREVIEWS} element={<MyReviewsPage />} />
             <Route key={ROUTES.FAVORITES} path={ROUTES.FAVORITES} element={<FavoritesPage />} />
+            <Route key={ROUTES.CATEGORIES} path={ROUTES.CATEGORIES} element={<CategoriesPage />} />
             {/* <Route key={ROUTES.FAVORITES} path={ROUTES.FAVORITES} element={<FavoritesScreen />} />
         <Route key={ROUTES.CRUD} path={ROUTES.CRUD} element={<CRUDScreen />} /> */}
 

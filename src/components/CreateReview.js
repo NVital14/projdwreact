@@ -30,13 +30,11 @@ const CreateReview = ({ isOpen, setIsOpen, categories, users, review, setReview 
     };
 
     const handleSelectChange = (selectedOptions) => {
-        console.log(selectedOptions);
         setFormData({
             ...formData,
             userIdsList: selectedOptions ? selectedOptions.map(option => option.value) : []
         });
-        // const userIdsList = selectedOptions.map(option => option.value);
-        // setFormData({ ...formData, userIdsList });
+
     };
 
     const handleSubmitSave = async (event) => {
@@ -58,11 +56,9 @@ const CreateReview = ({ isOpen, setIsOpen, categories, users, review, setReview 
         if (formData.image) {
             formDataToSend.append('imageReview', formData.image);
         }
-        console.log(formDataToSend);
-
+«
         try {
             const r = await saveReview(formDataToSend);
-            console.log(r);
             //tenho que mudar o estado da review, para a página das reviews voltar a ir buscá-las
             setReview({
                 title: formData.title,
@@ -113,13 +109,9 @@ const CreateReview = ({ isOpen, setIsOpen, categories, users, review, setReview 
         if (formData.image != review.image) {
             formDataToSend.append('imageReview', formData.image);
         }
-        // console.log(formDataToSend);
 
         try {
-            console.log("dentro do try");
             const r = await editReview(review.reviewId, formDataToSend);
-            console.log("já editei");
-            console.log(r);
 
             setIsOpen(false);
             //tenho que mudar o estado da review, para a página das reviews voltar a ir buscá-las
@@ -155,6 +147,8 @@ const CreateReview = ({ isOpen, setIsOpen, categories, users, review, setReview 
     useEffect(() => {
         if (review) {
             let idsList = [];
+            //vai buscar os colaboradores, ou seja, verifica quais users são colaboradores e coloca os seus ids num array
+            //isto serve para na edição aparecer utilizadores no select já selecionados
             if (review.users && Array.isArray(review.users)) {
                 review.users.forEach(el => {
                     if (context.user.id != el.id) {
